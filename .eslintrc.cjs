@@ -12,5 +12,7 @@ module.exports = {
         project: true,
         tsconfigRootDir: __dirname,
     },
-    rules: {},
+    rules: {
+        "no-console":"error"
+    },
 };
