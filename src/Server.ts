@@ -1,3 +1,14 @@
+import app from "./app";
 import { Config } from "./config";
 
-console.log("Server is running at port:", Config.PORT, "in", Config.NODE_ENV);
+const startServer = () => {
+    try {
+        const PORT = Config.PORT;
+        app.listen(PORT, () => console.log(`Server running at ${PORT}`));
+    } catch (error) {
+        console.log("Could not start server");
+        process.exit(1);
+    }
+};
+
+startServer();
