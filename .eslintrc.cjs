@@ -13,6 +13,5 @@ module.exports = {
         tsconfigRootDir: __dirname,
     },
     rules: {
-        "no-console": "error",
     },
 };

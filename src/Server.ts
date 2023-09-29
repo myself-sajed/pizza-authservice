@@ -1,6 +1,3 @@
-function login(username: string): string {
-    // console.log(username);
-    return username;
-}
+import { Config } from "./config";
 
-login("shaikhsajed");
+console.log("Server is running at port:", Config.PORT, "in", Config.NODE_ENV);
