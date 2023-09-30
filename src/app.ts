@@ -7,6 +7,7 @@ const app = express();
 app.get("/", (req, res) => {
     const err = createHttpError(401, "Something went wrong");
     throw err;
+    // res.send({ status: "success" });
 });
 
 // Global error handling
