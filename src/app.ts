@@ -1,14 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 import { HttpError } from "http-errors";
+import authRouter from "./routes/auth";
+import "reflect-metadata";
 
 const app = express();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.get("/", (req, res) => {
-    // const err = createHttpError(401, "Something went wrong");
-    // throw err;
-    res.send("Welcome to Pizza Auth Service");
-});
+app.use("/auth", authRouter);
 
 // Global error handling
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
