@@ -5,9 +5,9 @@ import { Config } from ".";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: Config.DB_HOST,
     port: Number(Config.DB_PORT),
     username: Config.DB_USERNAME,
+    host: Config.DB_HOST,
     password: Config.DB_PASS,
     database: Config.DB_NAME,
     // dont use synchronize in production
