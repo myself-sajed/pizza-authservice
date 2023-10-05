@@ -13,7 +13,6 @@ describe("POST /auth/register testing", () => {
     });
 
     beforeEach(async () => {
-        // await trucateTables(connection);
         await connection.dropDatabase();
         await connection.synchronize();
     });
@@ -116,6 +115,47 @@ describe("POST /auth/register testing", () => {
             const user = await repo.find();
 
             expect(user[0].role).toBe(Roles.Customer);
+        });
+
+        it("should store the hashed password only", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "shaikhsajed98220@gmail.com",
+                password: "1234",
+            };
+
+            // 2. Act
+            await request(app).post("/auth/register").send(userInfo);
+
+            // 3. Assert (expectations testing)
+            const repo = connection.getRepository(User);
+            const user = await repo.find();
+
+            expect(user[0].password).not.toBe(userInfo.password);
+            expect(user[0].password).toHaveLength(60);
+        });
+
+        it("should check if the e-mail already exists or not", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "shaikhsajed98220@gmail.com",
+                password: "1234",
+            };
+
+            // 2. Act
+            const repo = connection.getRepository(User);
+            await repo.save({ ...userInfo, role: Roles.Customer });
+
+            await request(app).post("/auth/register").send(userInfo);
+
+            // 3. Assert (expectations testing)
+            const user = await repo.find();
+
+            expect(user).toHaveLength(1);
         });
     });
 });
