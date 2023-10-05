@@ -2,8 +2,8 @@ import request from "supertest";
 import app from "../../src/app";
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
-import { trucateTables } from "../utils";
 import { User } from "../../src/entity/User";
+import { Roles } from "../../src/constants";
 
 describe("POST /auth/register testing", () => {
     let connection: DataSource;
@@ -13,8 +13,9 @@ describe("POST /auth/register testing", () => {
     });
 
     beforeEach(async () => {
-        // truncate logic
-        await trucateTables(connection);
+        // await trucateTables(connection);
+        await connection.dropDatabase();
+        await connection.synchronize();
     });
 
     afterAll(async () => {
@@ -66,7 +67,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed 3",
                 email: "shaikhsajed98220@gmail.com",
-                password: "123",
+                password: "1234",
             };
 
             // 2. Act
@@ -77,6 +78,44 @@ describe("POST /auth/register testing", () => {
             const users = await repo.find();
 
             expect(users).toHaveLength(1);
+        });
+
+        it("check if the db item is has the same name as the info", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "shaikhsajed98220@gmail.com",
+                password: "1234",
+            };
+
+            // 2. Act
+            await request(app).post("/auth/register").send(userInfo);
+
+            // 3. Assert (expectations testing)
+            const repo = connection.getRepository(User);
+            const user = await repo.find();
+
+            expect(user[0].name).toBe(userInfo.name);
+        });
+
+        it("should have customer as the role of every registering user", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "shaikhsajed98220@gmail.com",
+                password: "1234",
+            };
+
+            // 2. Act
+            await request(app).post("/auth/register").send(userInfo);
+
+            // 3. Assert (expectations testing)
+            const repo = connection.getRepository(User);
+            const user = await repo.find();
+
+            expect(user[0].role).toBe(Roles.Customer);
         });
     });
 });
