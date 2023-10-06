@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import { RequestWithUserInfo } from "../types";
 import { UserService } from "../services/UserService";
 import { Logger } from "winston";
+import { validationResult } from "express-validator";
 
 export default class AuthController {
     constructor(
@@ -16,6 +17,11 @@ export default class AuthController {
         res: Response,
         next: NextFunction,
     ) {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            return res.json({ errors: result.array() });
+        }
+
         const { name, email, password } = req.body;
         this.logger.debug({ name, email, password: "******" });
         try {

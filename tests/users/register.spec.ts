@@ -158,4 +158,25 @@ describe("POST /auth/register testing", () => {
             expect(user).toHaveLength(1);
         });
     });
+
+    describe("With some fields missing", () => {
+        it("should not create a record if the email does not exist", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "",
+                password: "1234",
+            };
+
+            // 2. Act
+            await request(app).post("/auth/register").send(userInfo);
+
+            // 3. Assert (expectations testing)
+            const repo = connection.getRepository(User);
+            const user = await repo.find();
+
+            expect(user).toHaveLength(0);
+        });
+    });
 });
