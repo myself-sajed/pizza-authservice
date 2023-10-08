@@ -28,7 +28,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
-                password: "123",
+                password: "hjakdfhk384928123",
             };
 
             // 2. Act
@@ -46,7 +46,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed",
                 email: "shaikhsajed98220@gmail.com",
-                password: "123",
+                password: "hjakdfhk384928123",
             };
 
             // 2. Act
@@ -66,7 +66,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed 3",
                 email: "shaikhsajed98220@gmail.com",
-                password: "1234",
+                password: "hjakdfhk3849281234",
             };
 
             // 2. Act
@@ -85,7 +85,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
-                password: "1234",
+                password: "hjakdfhk3849281234",
             };
 
             // 2. Act
@@ -104,7 +104,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
-                password: "1234",
+                password: "hjakdfhk3849281234",
             };
 
             // 2. Act
@@ -123,7 +123,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
-                password: "1234",
+                password: "hjakdfhk3849281234",
             };
 
             // 2. Act
@@ -143,7 +143,7 @@ describe("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
-                password: "1234",
+                password: "hjakdfhk3849281234",
             };
 
             // 2. Act
@@ -160,23 +160,73 @@ describe("POST /auth/register testing", () => {
     });
 
     describe("With some fields missing", () => {
+        it("should not create a record if the name does not exist", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "",
+                email: "shaikhsajed@gmail.com",
+                password: "hjakdfhk3849281234",
+            };
+
+            // 2. Act
+            const res = await request(app)
+                .post("/auth/register")
+                .send(userInfo);
+
+            // 3. Assert (expectations testing)
+            expect(res.statusCode).toBe(400);
+        });
         it("should not create a record if the email does not exist", async () => {
             /// AAA
             // 1. Arrange
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "",
-                password: "1234",
+                password: "hjakdfhk3849281234",
             };
 
             // 2. Act
-            await request(app).post("/auth/register").send(userInfo);
+            const res = await request(app)
+                .post("/auth/register")
+                .send(userInfo);
 
             // 3. Assert (expectations testing)
-            const repo = connection.getRepository(User);
-            const user = await repo.find();
+            expect(res.statusCode).toBe(400);
+        });
+        it("should not create a record if the password does not exist", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "shaikhsajed@gmail.com",
+                password: "",
+            };
 
-            expect(user).toHaveLength(0);
+            // 2. Act
+            const res = await request(app)
+                .post("/auth/register")
+                .send(userInfo);
+
+            // 3. Assert (expectations testing)
+            expect(res.statusCode).toBe(400);
+        });
+        it("should check of the password has length at least 8 characters other wise return 400", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed shaikh moiz",
+                email: "shaikhsajed@gmail.com",
+                password: "1234567",
+            };
+
+            // 2. Act
+            const res = await request(app)
+                .post("/auth/register")
+                .send(userInfo);
+
+            // 3. Assert (expectations testing)
+            expect(res.statusCode).toBe(400);
         });
     });
 });
