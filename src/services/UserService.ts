@@ -22,12 +22,14 @@ export class UserService {
             // password hashing using bcrypt
             const hashedPassword = await hashData(password);
 
-            await this.userRepository.save({
+            const newUser = await this.userRepository.save({
                 name,
                 email,
                 password: hashedPassword,
                 role: Roles.Customer,
             });
+
+            return newUser;
         } catch (error) {
             const err = createHttpError(
                 500,

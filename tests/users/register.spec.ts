@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
+import { isJWT } from "../utils";
 
 describe("POST /auth/register testing", () => {
     let connection: DataSource;
@@ -156,6 +157,46 @@ describe("POST /auth/register testing", () => {
             const user = await repo.find();
 
             expect(user).toHaveLength(1);
+        });
+
+        it("should return valid access and refresh tokens", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed 3",
+                email: "shaikhsajed98220@gmail.com",
+                password: "hjakdfhk3849281234",
+            };
+
+            // 2. Act
+            const response = await request(app)
+                .post("/auth/register")
+                .send(userInfo);
+
+            interface Headers {
+                ["set-cookie"]: [];
+            }
+
+            let accessToken = null;
+            let refreshToken = null;
+
+            // 3. Assert (expectations testing)
+            const cookies = (response.headers as Headers)["set-cookie"] || [];
+            cookies.forEach((cookie: string) => {
+                if (cookie.includes("accessToken")) {
+                    accessToken = cookie.split(";")[0].split("=")[1];
+                }
+
+                if (cookie.includes("refreshToken")) {
+                    refreshToken = cookie.split(";")[0].split("=")[1];
+                }
+            });
+
+            expect(accessToken).not.toBeNull();
+            expect(refreshToken).not.toBeNull();
+
+            expect(isJWT(accessToken)).toBeTruthy();
+            expect(isJWT(refreshToken)).toBeTruthy();
         });
     });
 
