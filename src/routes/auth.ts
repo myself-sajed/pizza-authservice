@@ -5,11 +5,15 @@ import { AppDataSource } from "../config/data-source";
 import { User } from "../entity/User";
 import logger from "../config/logger";
 import registrationValidators from "../validators/registration-validators";
+import { TokenService } from "../services/TokenService";
+import { RefreshToken } from "../entity/RefreshToken";
 const router = express.Router();
 
 const userRepository = AppDataSource.getRepository(User);
 const userservice = new UserService(userRepository);
-const authController = new AuthController(userservice, logger);
+const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
+const tokenService = new TokenService(refreshTokenRepo);
+const authController = new AuthController(userservice, logger, tokenService);
 
 router.post(
     "/register",

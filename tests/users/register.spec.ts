@@ -5,6 +5,7 @@ import { AppDataSource } from "../../src/config/data-source";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 import { isJWT } from "../utils";
+import { RefreshToken } from "../../src/entity/RefreshToken";
 
 describe("POST /auth/register testing", () => {
     let connection: DataSource;
@@ -197,6 +198,34 @@ describe("POST /auth/register testing", () => {
 
             expect(isJWT(accessToken)).toBeTruthy();
             expect(isJWT(refreshToken)).toBeTruthy();
+        });
+
+        it("should return a record with user id", async () => {
+            /// AAA
+            // 1. Arrange
+            const userInfo = {
+                name: "Shaikh Sajed ahmed 3",
+                email: "shaikhsajed98220@gmail.com",
+                password: "hjakdfhk3849281234",
+            };
+
+            // 2. Act
+            const response = await request(app)
+                .post("/auth/register")
+                .send(userInfo);
+
+            const refreshTokenRepo = connection.getTreeRepository(RefreshToken);
+            const refreshToken = await refreshTokenRepo.find();
+            expect(refreshToken).toHaveLength(1);
+
+            const tokens = await refreshTokenRepo
+                .createQueryBuilder("refreshToken")
+                .where("refreshToken.userId = :userId", {
+                    userId: (response.body as Record<string, string>).id,
+                })
+                .getMany();
+
+            expect(tokens).toHaveLength(1);
         });
     });
 

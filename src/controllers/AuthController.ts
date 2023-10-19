@@ -1,20 +1,19 @@
-import fs from "fs";
-import path from "path";
 import { NextFunction, Response } from "express";
 import { RequestWithUserInfo } from "../types";
 import { UserService } from "../services/UserService";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
-import jwt from "jsonwebtoken";
-import createHttpError from "http-errors";
-import { Config } from "../config";
+import { JwtPayload } from "jsonwebtoken";
+import { TokenService } from "../services/TokenService";
 
 export default class AuthController {
     constructor(
         private userservice: UserService,
         private logger: Logger,
+        private tokenService: TokenService,
     ) {
         this.userservice = userservice;
+        this.tokenService = tokenService;
     }
 
     async register(
@@ -30,44 +29,31 @@ export default class AuthController {
         const { name, email, password } = req.body;
         this.logger.debug({ name, email, password: "******" });
         try {
+            // creating user
             const user = await this.userservice.create({
                 name,
                 email,
                 password,
             });
 
-            let privateKey: Buffer;
-            // let publicKey;
-            try {
-                privateKey = fs.readFileSync(
-                    path.join(__dirname, `../../certs/privateKey.pem`),
-                );
-            } catch (err) {
-                const error = createHttpError(500, "Private key not found");
-                next(error);
-                return;
-            }
-
-            const payload = {
-                sub: user.id,
+            // jwt payload
+            const payload: JwtPayload = {
+                sub: String(user.id),
                 role: user.role,
             };
 
-            const accessToken = jwt.sign(payload, privateKey, {
-                algorithm: "RS256",
-                issuer: "auth-service",
-                expiresIn: "1h",
-            });
+            // generating access token
+            const accessToken = this.tokenService.generateAccessToken(payload);
 
-            const refreshToken = jwt.sign(
-                payload,
-                Config.REFRESH_TOKEN_SECRET!,
-                {
-                    algorithm: "HS256",
-                    issuer: "auth-service",
-                    expiresIn: "1y",
-                },
-            );
+            // persisting refresh token
+            const refreshTokenRecord =
+                await this.tokenService.saveRefreshTokenRecord(user);
+
+            // generating refresh token
+            const refreshToken = this.tokenService.generateRefreshToken({
+                ...payload,
+                id: refreshTokenRecord.id,
+            });
 
             // sending cookies
 
@@ -88,7 +74,7 @@ export default class AuthController {
             });
 
             this.logger.info("User registration was successful.");
-            res.status(201).json({ status: "success" });
+            res.status(201).json(user);
         } catch (error) {
             next(error);
             return;
