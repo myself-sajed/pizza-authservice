@@ -10,32 +10,24 @@ export class UserService {
         this.userRepository = userRepository;
     }
     async create({ name, email, password }: UserInfo) {
-        try {
-            const user = await this.userRepository.findOne({
-                where: { email },
-            });
-            if (user) {
-                const err = createHttpError(400, "Email already exists");
-                throw err;
-            }
-
-            // password hashing using bcrypt
-            const hashedPassword = await hashData(password);
-
-            const newUser = await this.userRepository.save({
-                name,
-                email,
-                password: hashedPassword,
-                role: Roles.Customer,
-            });
-
-            return newUser;
-        } catch (error) {
-            const err = createHttpError(
-                500,
-                "Could not save user to the database",
-            );
+        const user = await this.userRepository.findOne({
+            where: { email },
+        });
+        if (user) {
+            const err = createHttpError(400, "Email already exists");
             throw err;
         }
+
+        // password hashing using bcrypt
+        const hashedPassword = await hashData(password);
+
+        const newUser = await this.userRepository.save({
+            name,
+            email,
+            password: hashedPassword,
+            role: Roles.Customer,
+        });
+
+        return newUser;
     }
 }
