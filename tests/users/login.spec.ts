@@ -21,7 +21,7 @@ describe("POST /auth/login testing", () => {
     });
 
     describe("with all the fields needed, happy test", () => {
-        it("Should return valid status code 201", async () => {
+        it("Should return valid status code 200", async () => {
             /// AAA
             // 1. Arrange
             const userInfo = {
@@ -46,7 +46,7 @@ describe("POST /auth/login testing", () => {
                 .send(loginInfo);
 
             // 3. Assert (expectations testing)
-            expect(response.statusCode).toBe(201);
+            expect(response.statusCode).toBe(200);
         });
 
         it("Should return the email that has been sent", async () => {
@@ -94,7 +94,7 @@ describe("POST /auth/login testing", () => {
             /// AAA
             // 1. Arrange
             const loginInfo = {
-                email: "shaikhsajed982201@gmail.com",
+                email: "shaikhsajed982200@gmail.com",
                 password: "shaikhsajed98220",
             };
 
@@ -123,7 +123,7 @@ describe("POST /auth/login testing", () => {
             // 1. Arrange
             const loginInfo = {
                 email: "shaikhsajed98220@gmail.com",
-                password: "shaikhsajed982201",
+                password: "shaikhsajed982200",
             };
 
             // 2. Act
