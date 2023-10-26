@@ -175,7 +175,6 @@ export default class AuthController {
         const userId = req.auth.sub;
 
         const user = await this.userservice.findById(Number(userId));
-
-        res.json(user);
+        res.json({ ...user, password: undefined });
     }
 }
