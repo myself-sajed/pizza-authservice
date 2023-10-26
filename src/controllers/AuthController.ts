@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { RequestWithUserInfo } from "../types";
+import { RequestWithAuthInfo, RequestWithUserInfo } from "../types";
 import { UserService } from "../services/UserService";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
@@ -168,5 +168,14 @@ export default class AuthController {
             next(error);
             return;
         }
+    }
+
+    async self(req: RequestWithAuthInfo, res: Response) {
+        console.log("Cookie :", req.auth);
+        const userId = req.auth.sub;
+
+        const user = await this.userservice.findById(Number(userId));
+
+        res.json(user);
     }
 }

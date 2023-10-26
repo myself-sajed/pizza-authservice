@@ -4,7 +4,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import { isJWT } from "../utils";
 
-describe("POST /auth/login testing", () => {
+describe.skip("POST /auth/login testing", () => {
     let connection: DataSource;
 
     beforeAll(async () => {

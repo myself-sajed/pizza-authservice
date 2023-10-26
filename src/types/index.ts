@@ -9,3 +9,10 @@ export interface UserInfo {
 export interface RequestWithUserInfo extends Request {
     body: UserInfo;
 }
+
+export interface RequestWithAuthInfo extends Request {
+    auth: {
+        sub: string;
+        role: string;
+    };
+}
