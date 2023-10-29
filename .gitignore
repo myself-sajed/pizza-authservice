@@ -90,7 +90,6 @@ web_modules/
 .next
 out
 certs/
-public/
 
 # Nuxt.js build / generate output
 .nuxt
@@ -133,3 +132,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# public
+public/
