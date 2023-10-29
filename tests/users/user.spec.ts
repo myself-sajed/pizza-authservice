@@ -30,6 +30,12 @@ describe("/GET User auth", () => {
     });
 
     it("should return 200 as a response", async () => {
+        const res = await request(app).post("/auth/self");
+
+        expect(res.statusCode).toEqual(401);
+    });
+
+    it("should return 401 as a response status if tokens are not sent from client", async () => {
         const accessToken = jwks.token({
             sub: "1",
             role: Roles.Customer,
@@ -94,11 +100,6 @@ describe("/GET User auth", () => {
         const res = await request(app)
             .post("/auth/self")
             .set("Cookie", [`accessToken=${accessToken};`]);
-
-        console.log(
-            "Res body: +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
-            res.body,
-        );
 
         expect(res.body as Record<string, string>).not.toHaveProperty(
             "password",
