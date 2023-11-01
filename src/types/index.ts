@@ -14,5 +14,10 @@ export interface RequestWithAuthInfo extends Request {
     auth: {
         sub: string;
         role: string;
+        id?: string;
     };
+}
+export interface IRevokeToken {
+    sub: string;
+    id: string;
 }

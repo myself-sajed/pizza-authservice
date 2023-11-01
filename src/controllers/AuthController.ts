@@ -62,20 +62,20 @@ export default class AuthController {
             // sending cookies
 
             // 1. sending access token in cookies
-            res.cookie("accessToken", accessToken, {
-                maxAge: 60 * 60 * 1000, //1hr
-                httpOnly: true,
-                sameSite: "strict",
-                domain: "localhost",
-            });
+            this.tokenService.setCookie(
+                res,
+                "accessToken",
+                accessToken,
+                60 * 60 * 1000,
+            );
 
             // 2. sending refresh token in cookies
-            res.cookie("refreshToken", refreshToken, {
-                maxAge: 60 * 60 * 1000 * 365, // 1yr
-                httpOnly: true,
-                sameSite: "strict",
-                domain: "localhost",
-            });
+            this.tokenService.setCookie(
+                res,
+                "refreshToken",
+                refreshToken,
+                60 * 60 * 1000 * 365,
+            );
 
             this.logger.info("User registration was successful.", {
                 id: user.id,
@@ -176,5 +176,86 @@ export default class AuthController {
 
         const user = await this.userservice.findById(Number(userId));
         res.json({ ...user, password: undefined });
+    }
+
+    async refresh(req: RequestWithAuthInfo, res: Response, next: NextFunction) {
+        // jwt payload
+        const payload: JwtPayload = {
+            sub: req.auth.sub,
+            role: req.auth.role,
+        };
+
+        // generating access token
+        const accessToken = this.tokenService.generateAccessToken(payload);
+
+        const user = await this.userservice.findById(Number(req.auth.sub));
+
+        if (!user) {
+            const err = createHttpError(
+                400,
+                "User is not valid as per the token sent",
+            );
+            next(err);
+            return;
+        }
+
+        // persisting refresh token
+        const refreshTokenRecord =
+            await this.tokenService.saveRefreshTokenRecord(user);
+
+        // delete older refresh token for security concerns.
+        await this.tokenService.deleteRefreshToken(Number(req.auth.id));
+
+        // generating refresh token
+        const refreshToken = this.tokenService.generateRefreshToken({
+            ...payload,
+            id: refreshTokenRecord.id,
+        });
+
+        // sending cookies
+
+        // 1. sending access token in cookies
+        this.tokenService.setCookie(
+            res,
+            "accessToken",
+            accessToken,
+            60 * 60 * 1000,
+        );
+
+        // 2. sending refresh token in cookies
+        this.tokenService.setCookie(
+            res,
+            "refreshToken",
+            refreshToken,
+            60 * 60 * 1000 * 365,
+        );
+
+        this.logger.info("User registration was successful.", {
+            id: user.id,
+        });
+        res.status(201).json(user);
+    }
+
+    async logout(req: RequestWithAuthInfo, res: Response, next: NextFunction) {
+        try {
+            await this.tokenService.deleteRefreshToken(Number(req.auth.id));
+
+            this.logger.info("Refresh token deleted", { id: req.auth.id });
+            this.logger.info("User logged out successfully", {
+                id: req.auth.sub,
+            });
+
+            res.clearCookie("accessToken");
+            res.clearCookie("refreshToken");
+
+            res.json({ status: "Logout successfully" });
+        } catch (err) {
+            const error = createHttpError(
+                400,
+                "Could not log out, please try again",
+            );
+            next(error);
+            return;
+        }
     }
 }

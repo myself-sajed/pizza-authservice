@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import express, { NextFunction, Request, Response } from "express";
 import AuthController from "../controllers/AuthController";
 import { UserService } from "../services/UserService";
@@ -9,8 +10,10 @@ import { TokenService } from "../services/TokenService";
 import { RefreshToken } from "../entity/RefreshToken";
 import loginValidators from "../validators/login-validators";
 import { CredentialManagerService } from "../services/CredentialManagerService";
-import authenticate from "../middleware/authenticate";
 import { RequestWithAuthInfo } from "../types";
+import authenticateAccessToken from "../middleware/authenticateAccessToken";
+import authenticateRefreshToken from "../middleware/authenticateRefreshToken";
+import parseRefreshToken from "../middleware/parseRefreshToken";
 const router = express.Router();
 
 const userRepository = AppDataSource.getRepository(User);
@@ -28,7 +31,6 @@ const authController = new AuthController(
 router.post(
     "/register",
     registrationValidators,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (req: Request, res: Response, next: NextFunction) =>
         authController.register(req, res, next),
 );
@@ -36,14 +38,27 @@ router.post(
 router.post(
     "/login",
     loginValidators,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (req: Request, res: Response, next: NextFunction) =>
         authController.login(req, res, next),
 );
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
-router.post("/self", authenticate, (req: Request, res: Response) =>
+router.post("/self", authenticateAccessToken, (req: Request, res: Response) =>
     authController.self(req as RequestWithAuthInfo, res),
+);
+
+router.post(
+    "/refresh",
+    authenticateRefreshToken,
+    (req: Request, res: Response, next: NextFunction) =>
+        authController.refresh(req as RequestWithAuthInfo, res, next),
+);
+
+router.post(
+    "/logout",
+    authenticateAccessToken,
+    parseRefreshToken,
+    (req: Request, res: Response, next: NextFunction) =>
+        authController.logout(req as RequestWithAuthInfo, res, next),
 );
 
 export default router;
