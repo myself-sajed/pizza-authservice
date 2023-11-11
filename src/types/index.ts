@@ -29,3 +29,23 @@ export interface ICreateTenantData {
 export interface RequestWithCreateTenantData extends Request {
     body: ICreateTenantData;
 }
+export interface RequestWithTenantId extends Request {
+    body: {
+        id: number;
+    };
+}
+
+export interface RequestWithTenantUpdateInfo extends Request {
+    body: {
+        tenantToUpdate: number;
+        detailsToUpdate: {
+            name?: string;
+            address?: string;
+        };
+    };
+}
+
+export interface TenantDetailsToUpdate {
+    name?: string;
+    address?: string;
+}

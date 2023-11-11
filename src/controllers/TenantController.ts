@@ -1,8 +1,13 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TenantService } from "../services/TenantService";
-import { RequestWithCreateTenantData } from "../types";
+import {
+    RequestWithCreateTenantData,
+    RequestWithTenantId,
+    RequestWithTenantUpdateInfo,
+} from "../types";
 import { validationResult } from "express-validator";
 import { Logger } from "winston";
+import createHttpError from "http-errors";
 
 export class TenantController {
     constructor(
@@ -44,6 +49,84 @@ export class TenantController {
             res.status(201).json(tenant);
         } catch (error) {
             next(error);
+        }
+    }
+
+    async getTenants(req: Request, res: Response) {
+        try {
+            const tenants = await this.tenantService.getTenantList();
+            res.status(200).json({ tenants });
+        } catch (error) {
+            const err = createHttpError(400, "No tenants found");
+            throw err;
+        }
+    }
+
+    async findTenant(req: RequestWithTenantId, res: Response) {
+        try {
+            const tenant = await this.tenantService.findTenantById(req.body.id);
+            if (!tenant) {
+                const err = createHttpError(400, "No tenant found");
+                throw err;
+            }
+            res.status(200).json(tenant);
+        } catch (error) {
+            const err = createHttpError(400, "No tenant found");
+            throw err;
+        }
+    }
+
+    async updateTenant(req: RequestWithTenantUpdateInfo, res: Response) {
+        try {
+            const isTenantExists = await this.tenantService.findTenantById(
+                req.body.tenantToUpdate,
+            );
+
+            if (!isTenantExists) {
+                throw new Error("Tenant not found");
+            } else {
+                const updatedQuery = await this.tenantService.updateTenantById(
+                    req.body.tenantToUpdate,
+                    req.body.detailsToUpdate,
+                );
+
+                if (updatedQuery.affected === 1) {
+                    const tenant = await this.tenantService.findTenantById(
+                        req.body.tenantToUpdate,
+                    );
+                    this.logger.info("Tenant updated successfully", {
+                        id: req.body.tenantToUpdate,
+                    });
+
+                    res.status(200).json(tenant);
+                    return;
+                } else {
+                    const err = createHttpError(400, "Could not update tenant");
+                    throw err;
+                }
+            }
+        } catch (error) {
+            const err = createHttpError(400, "No tenant found");
+            throw err;
+        }
+    }
+
+    async deleteTenant(req: RequestWithTenantId, res: Response) {
+        try {
+            const tenant = await this.tenantService.deleteTenantById(
+                req.body.id,
+            );
+            if (!tenant) {
+                const err = createHttpError(400, "No tenant found");
+                throw err;
+            }
+            this.logger.info("Tenant deleted successfully", {
+                id: req.body.id,
+            });
+            res.status(202).json({});
+        } catch (error) {
+            const err = createHttpError(400, "No tenant found");
+            throw err;
         }
     }
 }
