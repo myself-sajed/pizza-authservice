@@ -21,3 +21,11 @@ export interface IRevokeToken {
     sub: string;
     id: string;
 }
+export interface ICreateTenantData {
+    name: string;
+    address: string;
+}
+
+export interface RequestWithCreateTenantData extends Request {
+    body: ICreateTenantData;
+}
