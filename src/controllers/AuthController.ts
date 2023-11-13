@@ -30,7 +30,7 @@ export default class AuthController {
             return res.status(400).json({ errors: result.array() });
         }
 
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
         this.logger.debug({ name, email, password: "******" });
         try {
             // creating user
@@ -38,6 +38,7 @@ export default class AuthController {
                 name,
                 email,
                 password,
+                role,
             });
 
             // jwt payload

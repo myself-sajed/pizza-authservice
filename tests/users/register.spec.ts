@@ -30,6 +30,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk384928123",
             };
 
@@ -48,6 +49,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk384928123",
             };
 
@@ -68,6 +70,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed 3",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -87,6 +90,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -106,6 +110,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -125,6 +130,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -145,6 +151,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -166,6 +173,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed 3",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -206,6 +214,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed 3",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -236,6 +245,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "",
                 email: "shaikhsajed@gmail.com",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -253,6 +263,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "",
+                role: Roles.Customer,
                 password: "hjakdfhk3849281234",
             };
 
@@ -270,6 +281,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed@gmail.com",
+                role: Roles.Customer,
                 password: "",
             };
 
@@ -287,6 +299,7 @@ describe.skip("POST /auth/register testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed ahmed shaikh moiz",
                 email: "shaikhsajed@gmail.com",
+                role: Roles.Customer,
                 password: "1234567",
             };
 

@@ -2,14 +2,13 @@ import { Repository } from "typeorm";
 import { User } from "../entity/User";
 import { UserInfo } from "../types";
 import createHttpError from "http-errors";
-import { Roles } from "../constants";
 import { hashData } from "./Hashing";
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {
         this.userRepository = userRepository;
     }
-    async create({ name, email, password }: UserInfo) {
+    async create({ name, email, password, role, tenantId }: UserInfo) {
         const user = await this.userRepository.findOne({
             where: { email },
         });
@@ -25,7 +24,8 @@ export class UserService {
             name,
             email,
             password: hashedPassword,
-            role: Roles.Customer,
+            role,
+            tenant: tenantId ? { id: Number(tenantId) } : undefined,
         });
 
         return newUser;

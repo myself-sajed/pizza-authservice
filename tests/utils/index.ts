@@ -1,4 +1,8 @@
-import { DataSource } from "typeorm";
+import { DataSource, Repository } from "typeorm";
+import request from "supertest";
+import { Tenant } from "../../src/entity/Tenant";
+import { Roles } from "../../src/constants";
+import { Express } from "express";
 
 export const trucateTables = async (connection: DataSource) => {
     const entities = connection.entityMetadatas;
@@ -29,3 +33,30 @@ export function isJWT(token: string | null): boolean {
 
     return false;
 }
+
+export const createTenant = async (
+    tenantRepo: Repository<Tenant>,
+    adminToken: string,
+    app: Express,
+) => {
+    const tenantInfo = {
+        name: "Hangout",
+        address: "Basmath Road, Parbhani",
+    };
+
+    await request(app)
+        .post("/tenant/create")
+        .set("Cookie", [`accessToken=${adminToken};`])
+        .send(tenantInfo);
+
+    const tenants = await tenantRepo.find();
+
+    const userInfo = {
+        name: "Shaikh Sajed new",
+        email: "shaikhsajed98220@gmail.com",
+        role: Roles.Manager,
+        password: "hjakdfhk384928123",
+        tenantId: tenants[0].id,
+    };
+    return userInfo;
+};

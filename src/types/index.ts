@@ -4,6 +4,8 @@ export interface UserInfo {
     name: string;
     email: string;
     password: string;
+    role: string;
+    tenantId?: string;
 }
 
 export interface RequestWithUserInfo extends Request {

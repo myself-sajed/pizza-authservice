@@ -1,7 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 import { HttpError } from "http-errors";
+
+// routers
 import authRouter from "./routes/auth";
 import tenantRouter from "./routes/tenant";
+import userRouter from "./routes/user";
+
 import "reflect-metadata";
 import cookieParser from "cookie-parser";
 
@@ -16,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/tenant", tenantRouter);
+app.use("/user", userRouter);
 
 // Global error handling
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
