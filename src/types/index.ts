@@ -46,8 +46,27 @@ export interface RequestWithTenantUpdateInfo extends Request {
         };
     };
 }
+export interface RequestWithUserUpdateInfo extends Request {
+    body: {
+        userToUpdate: number;
+        detailsToUpdate: {
+            name?: string;
+            password?: string;
+            email?: string;
+        };
+    };
+}
 
 export interface TenantDetailsToUpdate {
     name?: string;
     address?: string;
+}
+export interface UserDetailsToUpdate {
+    name?: string;
+    password?: string;
+    email?: string;
+}
+
+export interface ResponseBody {
+    users: UserInfo[];
 }

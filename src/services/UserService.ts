@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { User } from "../entity/User";
-import { UserInfo } from "../types";
+import { UserDetailsToUpdate, UserInfo } from "../types";
 import createHttpError from "http-errors";
 import { hashData } from "./Hashing";
 
@@ -41,5 +41,29 @@ export class UserService {
         return await this.userRepository.findOne({
             where: { id },
         });
+    }
+
+    async findUsersByTenantId(tenantId: number) {
+        return await this.userRepository.find({
+            where: { tenant: { id: tenantId } },
+        });
+    }
+
+    async updateUserById(id: number, dataToUpdate: UserDetailsToUpdate) {
+        try {
+            return await this.userRepository.update({ id }, dataToUpdate);
+        } catch (error) {
+            const err = createHttpError("Error updating user");
+            throw err;
+        }
+    }
+
+    async deleteUserById(id: number) {
+        try {
+            return await this.userRepository.delete(id);
+        } catch (error) {
+            const err = createHttpError("Error deleting tenant");
+            throw err;
+        }
     }
 }

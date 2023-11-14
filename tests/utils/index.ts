@@ -52,7 +52,7 @@ export const createTenant = async (
     const tenants = await tenantRepo.find();
 
     const userInfo = {
-        name: "Shaikh Sajed new",
+        name: "Shaikh Sajed",
         email: "shaikhsajed98220@gmail.com",
         role: Roles.Manager,
         password: "hjakdfhk384928123",

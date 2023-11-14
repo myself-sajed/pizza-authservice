@@ -25,32 +25,26 @@ router.post(
         userController.create(req, res, next),
 );
 
-// router.get(
-//     "/getTenants",
-//     authenticateAccessToken,
-//     canOnlyBeAccessedBy([Roles.Admin]),
-//     (req: Request, res: Response) => tenantController.getTenants(req, res),
-// );
+router.post(
+    "/list",
+    authenticateAccessToken,
+    canOnlyBeAccessedBy([Roles.Admin]),
+    (req: Request, res: Response, next: NextFunction) =>
+        userController.getUsersByTenantId(req, res, next),
+);
 
-// router.post(
-//     "/findTenant",
-//     authenticateAccessToken,
-//     canOnlyBeAccessedBy([Roles.Admin]),
-//     (req: Request, res: Response) => tenantController.findTenant(req, res),
-// );
+router.post(
+    "/update",
+    authenticateAccessToken,
+    canOnlyBeAccessedBy([Roles.Admin]),
+    (req: Request, res: Response) => userController.updateUser(req, res),
+);
 
-// router.post(
-//     "/updateTenant",
-//     authenticateAccessToken,
-//     canOnlyBeAccessedBy([Roles.Admin]),
-//     (req: Request, res: Response) => tenantController.updateTenant(req, res),
-// );
-
-// router.post(
-//     "/deleteTenant",
-//     authenticateAccessToken,
-//     canOnlyBeAccessedBy([Roles.Admin]),
-//     (req: Request, res: Response) => tenantController.deleteTenant(req, res),
-// );
+router.post(
+    "/delete",
+    authenticateAccessToken,
+    canOnlyBeAccessedBy([Roles.Admin]),
+    (req: Request, res: Response) => userController.deleteUser(req, res),
+);
 
 export default router;

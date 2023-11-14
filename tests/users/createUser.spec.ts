@@ -6,6 +6,8 @@ import { Tenant } from "../../src/entity/Tenant";
 import createJWKSMock from "mock-jwks";
 import { Roles } from "../../src/constants";
 import { createTenant } from "../utils";
+import { ResponseBody } from "../../src/types";
+import { User } from "../../src/entity/User";
 
 describe("POST /user/create testing", () => {
     let connection: DataSource;
@@ -70,8 +72,6 @@ describe("POST /user/create testing", () => {
                 .set("Cookie", [`accessToken=${adminToken};`])
                 .send(userInfoWithTenant);
 
-            console.log(res.body);
-
             // 3. Assert (expectations testing)
             expect((res.body as Record<string, string>).name).toBe(
                 userInfoWithTenant.name,
@@ -90,159 +90,119 @@ describe("POST /user/create testing", () => {
                 .set("Cookie", [`accessToken=${adminToken};`])
                 .send(userInfoWithTenant);
 
-            console.log(res.body);
-
             // 3. Assert (expectations testing)
             expect((res.body as { tenant: { id: string } }).tenant.id).toBe(
                 userInfoWithTenant.tenantId,
             );
         });
 
-        // it("should return valid 400 code if fields are missing", async () => {
-        //     const tenantInfo = {
-        //         name: "",
-        //         address: "Basmath Road, Parbhani",
-        //     };
+        it("should return the list of users by tenantId", async () => {
+            const tenantRepo = connection.getRepository(Tenant);
 
-        //     const response = await request(app)
-        //         .post("/tenant/create")
-        //         .set("Cookie", [`accessToken=${adminToken};`])
-        //         .send(tenantInfo);
+            const tenantInfo = {
+                name: "Hangout",
+                address: "Basmath Road, Parbhani",
+            };
+            const tenant = await tenantRepo.save(tenantInfo);
+            const newTenant = await tenantRepo.save({
+                name: "Hangout New",
+                address: "Basmath Road, Parbhani",
+            });
 
-        //     const tenantRepo = connection.getRepository(Tenant);
-        //     const tenants = await tenantRepo.find();
+            await request(app)
+                .post("/user/create")
+                .set("Cookie", [`accessToken=${adminToken};`])
+                .send({
+                    name: "New tenant manager",
+                    email: "tenantnew@gmail.com",
+                    role: Roles.Manager,
+                    password: "hjakdfhk384928123",
+                    tenantId: newTenant.id,
+                });
 
-        //     // 3. Assert (expectations testing)
-        //     expect(tenants).toHaveLength(0);
+            await request(app)
+                .post("/user/create")
+                .set("Cookie", [`accessToken=${adminToken};`])
+                .send({
+                    name: "Shaikh Sajed",
+                    email: "shaikhsajed98220@gmail.com",
+                    role: Roles.Manager,
+                    password: "hjakdfhk384928123",
+                    tenantId: tenant.id,
+                });
 
-        //     expect(response.statusCode).toBe(400);
-        // });
+            await request(app)
+                .post("/user/create")
+                .set("Cookie", [`accessToken=${adminToken};`])
+                .send({
+                    name: "Sameer Pathan",
+                    email: "sameer@gmail.com",
+                    role: Roles.Manager,
+                    password: "hjakdfhk384928123",
+                    tenantId: tenant.id,
+                });
 
-        // it("should return valid 401 code if the user is not authenticated", async () => {
-        //     const tenantInfo = {
-        //         name: "Hangout Cafe",
-        //         address: "Basmath Road, Parbhani",
-        //     };
+            const res = await request(app)
+                .post("/user/list")
+                .set("Cookie", [`accessToken=${adminToken};`])
+                .send({ tenantId: tenant.id });
 
-        //     const managerToken = jwks.token({
-        //         sub: "1",
-        //         role: Roles.Manager,
-        //     });
+            const resBody = res.body as ResponseBody;
 
-        //     const response = await request(app)
-        //         .post("/tenant/create")
-        //         .set("Cookie", [`accessToken=${managerToken};`])
-        //         .send(tenantInfo);
+            expect(resBody.users).toHaveLength(2);
+            expect(resBody.users[0].name).toBe("Shaikh Sajed");
+            expect(resBody.users[1].name).toBe("Sameer Pathan");
 
-        //     expect(response.statusCode).toBe(403);
+            expect(res.statusCode).toBe(201);
+        });
 
-        //     const tenantRepo = connection.getRepository(Tenant);
-        //     const tenants = await tenantRepo.find();
+        it("should return the updated user", async () => {
+            const userInfoWithTenant = await createTenant(
+                connection.getRepository(Tenant),
+                adminToken,
+                app,
+            );
 
-        //     // 3. Assert (expectations testing)
-        //     expect(tenants).toHaveLength(0);
-        // });
+            const userRepo = connection.getRepository(User);
+            const user = await userRepo.save(userInfoWithTenant);
 
-        // it("should return the tenant list / array", async () => {
-        //     const tenantRepo = connection.getRepository(Tenant);
-        //     await tenantRepo.save({
-        //         name: "Hangout Cafe",
-        //         address: "Basmath Road, Parbhani",
-        //     });
-        //     await tenantRepo.save({
-        //         name: "Coffee Cafe",
-        //         address: "Jintur Road, Parbhani",
-        //     });
+            const updateDetails = {
+                userToUpdate: user.id,
+                detailsToUpdate: {
+                    name: "Sameer Pathan",
+                },
+            };
 
-        //     const response = await request(app)
-        //         .get("/tenant/getTenants")
-        //         .set("Cookie", [`accessToken=${adminToken};`])
-        //         .send();
+            const response = await request(app)
+                .post("/user/update")
+                .set("Cookie", [`accessToken=${adminToken};`])
+                .send(updateDetails);
 
-        //     expect(
-        //         (response.body as Record<string, string>).tenants,
-        //     ).toHaveLength(2);
-        // });
+            const resBody = response.body as {
+                name: string;
+                id: number;
+            };
 
-        // it("should return a tenant by id", async () => {
-        //     const tenantInfo = {
-        //         name: "Hangout Cafe",
-        //         address: "Basmath Road, Parbhani",
-        //     };
+            expect(resBody.name).toBe(updateDetails.detailsToUpdate.name);
+            expect(resBody.id).toBe(user.id);
+        });
 
-        //     const tenantRepo = connection.getRepository(Tenant);
-        //     const tenant = await tenantRepo.save(tenantInfo);
+        it("should delete the user using userId", async () => {
+            const userInfoWithTenant = await createTenant(
+                connection.getRepository(Tenant),
+                adminToken,
+                app,
+            );
 
-        //     const response = await request(app)
-        //         .post("/tenant/findTenant")
-        //         .set("Cookie", [`accessToken=${adminToken};`])
-        //         .send({ id: tenant.id });
+            const userRepo = connection.getRepository(User);
+            const user = await userRepo.save(userInfoWithTenant);
 
-        //     // 3. Assert (expectations testing)
-        //     expect((response.body as Record<string, string>).id).toBe(
-        //         tenant.id,
-        //     );
-        //     expect((response.body as Record<string, string>).name).toBe(
-        //         tenantInfo.name,
-        //     );
-        //     expect((response.body as Record<string, string>).address).toBe(
-        //         tenantInfo.address,
-        //     );
-        // });
+            const response = await request(app)
+                .post("/user/delete")
+                .set("Cookie", [`accessToken=${adminToken};`])
+                .send({ id: user.id });
 
-        // it("should return an updated tenant", async () => {
-        //     const tenantInfo = {
-        //         name: "Hangout Cafe",
-        //         address: "Basmath Road, Parbhani",
-        //     };
-
-        //     const tenantRepo = connection.getRepository(Tenant);
-        //     const tenant = await tenantRepo.save(tenantInfo);
-
-        //     const updateDetails = {
-        //         tenantToUpdate: tenant.id,
-        //         detailsToUpdate: {
-        //             name: "Cafe Coffee Day",
-        //         },
-        //     };
-
-        //     const response = await request(app)
-        //         .post("/tenant/updateTenant")
-        //         .set("Cookie", [`accessToken=${adminToken};`])
-        //         .send(updateDetails);
-
-        //     // 3. Assert (expectations testing)
-        //     expect((response.body as Record<string, string>).id).toBe(
-        //         tenant.id,
-        //     );
-        //     expect((response.body as Record<string, string>).name).toBe(
-        //         updateDetails.detailsToUpdate.name,
-        //     );
-        //     expect((response.body as Record<string, string>).address).toBe(
-        //         tenantInfo.address,
-        //     );
-        // });
-
-        // it("should return 202 if the user is deleted successfully", async () => {
-        //     const tenantInfo = {
-        //         name: "Hangout Cafe",
-        //         address: "Basmath Road, Parbhani",
-        //     };
-
-        //     const tenantRepo = connection.getRepository(Tenant);
-        //     const tenant = await tenantRepo.save(tenantInfo);
-
-        //     const response = await request(app)
-        //         .post("/tenant/deleteTenant")
-        //         .set("Cookie", [`accessToken=${adminToken};`])
-        //         .send({ id: tenant.id });
-
-        //     const isTenant = await tenantRepo.findOne({
-        //         where: { id: tenant.id },
-        //     });
-
-        //     expect(response.statusCode).toBe(202);
-        //     expect(isTenant).toBeFalsy();
-        // });
+            expect(response.statusCode).toBe(202);
+        });
     });
 });
