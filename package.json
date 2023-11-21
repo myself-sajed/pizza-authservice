@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/Server.ts",
         "format": "prettier . --write",
+        "build": "tsc",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "prepare": "husky install",

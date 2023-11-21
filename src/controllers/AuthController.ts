@@ -31,6 +31,7 @@ export default class AuthController {
         }
 
         const { name, email, password, role } = req.body;
+
         this.logger.debug({ name, email, password: "******" });
         try {
             // creating user
@@ -100,8 +101,6 @@ export default class AuthController {
         try {
             // check if user exist
             const user = await this.userservice.findByEmail(email);
-
-            console.log("User :", user);
 
             if (!user) {
                 const err = createHttpError(
@@ -174,7 +173,6 @@ export default class AuthController {
     }
 
     async self(req: RequestWithAuthInfo, res: Response) {
-        console.log("Cookie :", req.auth);
         const userId = req.auth.sub;
 
         const user = await this.userservice.findById(Number(userId));

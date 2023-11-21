@@ -25,11 +25,8 @@ router.post(
         tenantController.create(req, res, next),
 );
 
-router.get(
-    "/getTenants",
-    authenticateAccessToken,
-    canOnlyBeAccessedBy([Roles.Admin]),
-    (req: Request, res: Response) => tenantController.getTenants(req, res),
+router.get("/getTenants", (req: Request, res: Response) =>
+    tenantController.getTenants(req, res),
 );
 
 router.post(
