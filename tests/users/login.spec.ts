@@ -3,8 +3,9 @@ import app from "../../src/app";
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import { isJWT } from "../utils";
+import { Roles } from "../../src/constants";
 
-describe.skip("POST /auth/login testing", () => {
+describe("POST /auth/login testing", () => {
     let connection: DataSource;
 
     beforeAll(async () => {
@@ -27,6 +28,7 @@ describe.skip("POST /auth/login testing", () => {
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "shaikhsajed98220",
             };
 
@@ -51,10 +53,10 @@ describe.skip("POST /auth/login testing", () => {
 
         it("Should return the email that has been sent", async () => {
             /// AAA
-            // 1. Arrange
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "shaikhsajed98220",
             };
 
@@ -81,10 +83,10 @@ describe.skip("POST /auth/login testing", () => {
 
         it("Should return 401 if email or password does not exist", async () => {
             /// AAA
-            // 1. Arrange
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "shaikhsajed98220",
             };
 
@@ -109,10 +111,10 @@ describe.skip("POST /auth/login testing", () => {
 
         it("Should return 401 if password is incorrect", async () => {
             /// AAA
-            // 1. Arrange
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "shaikhsajed98220",
             };
 
@@ -137,10 +139,10 @@ describe.skip("POST /auth/login testing", () => {
 
         it("Should return valid access and refresh tokens", async () => {
             /// AAA
-            // 1. Arrange
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "shaikhsajed98220",
             };
 
@@ -188,10 +190,10 @@ describe.skip("POST /auth/login testing", () => {
 
         it("Should i have same email that has been sent to the server and user of the db", async () => {
             /// AAA
-            // 1. Arrange
             const userInfo = {
                 name: "Shaikh Sajed new",
                 email: "shaikhsajed98220@gmail.com",
+                role: Roles.Customer,
                 password: "shaikhsajed98220",
             };
 

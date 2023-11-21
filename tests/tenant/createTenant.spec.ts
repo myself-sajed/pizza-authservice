@@ -35,7 +35,7 @@ describe("POST /tenant/create testing", () => {
         await connection.destroy();
     });
 
-    describe.skip("creating the tenant", () => {
+    describe("creating the tenant", () => {
         it("should return 201 status code", async () => {
             const tenantInfo = {
                 name: "Hangout",

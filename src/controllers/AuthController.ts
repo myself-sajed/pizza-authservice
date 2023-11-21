@@ -101,6 +101,8 @@ export default class AuthController {
             // check if user exist
             const user = await this.userservice.findByEmail(email);
 
+            console.log("User :", user);
+
             if (!user) {
                 const err = createHttpError(
                     401,

@@ -12,7 +12,7 @@ export class MadeEntityNamePlural1699343764360 implements MigrationInterface {
         await queryRunner.renameTable("refresh_token", "refreshTokens");
 
         await queryRunner.query(
-            `ALTER TABLE "refreshTokens" ADD CONSTRAINT "FK_265bec4e500714d5269580a0219" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "refreshTokens" ADD CONSTRAINT "FK_265bec4e500714d5269580a0219" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE NO ACTION ON UPDATE NO ACTION`,
         );
     }
 
