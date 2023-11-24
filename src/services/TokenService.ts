@@ -1,7 +1,5 @@
 import createHttpError from "http-errors";
-import path from "path";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import fs from "fs";
 import { Config } from "../config";
 import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
@@ -14,11 +12,17 @@ export class TokenService {
     }
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: Buffer;
+        let privateKey: string;
         try {
-            privateKey = fs.readFileSync(
-                path.join(__dirname, `../../certs/privateKey.pem`),
-            );
+            if (!Config.PRIVATE_KEY) {
+                const error = createHttpError(
+                    500,
+                    "Secrete Key is not yet set",
+                );
+                throw error;
+            }
+
+            privateKey = Config.PRIVATE_KEY;
         } catch (err) {
             const error = createHttpError(500, "Private key not found");
             throw error;
