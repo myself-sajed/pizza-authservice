@@ -5,6 +5,8 @@ import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
 import { Repository } from "typeorm";
 import { Response } from "express";
+import fs from "fs";
+import path from "path";
 
 export class TokenService {
     constructor(private refreshTokenRepo: Repository<RefreshToken>) {
@@ -12,17 +14,11 @@ export class TokenService {
     }
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: string;
+        let privateKey: Buffer;
         try {
-            if (!Config.PRIVATE_KEY) {
-                const error = createHttpError(
-                    500,
-                    "Secrete Key is not yet set",
-                );
-                throw error;
-            }
-
-            privateKey = Config.PRIVATE_KEY;
+            privateKey = fs.readFileSync(
+                path.join(__dirname, `../../certs/privateKey.pem`),
+            );
         } catch (err) {
             const error = createHttpError(500, "Private key not found");
             throw error;
