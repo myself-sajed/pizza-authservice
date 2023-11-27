@@ -1,5 +1,9 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from "express";
 import { AppDataSource } from "../config/data-source";
 import logger from "../config/logger";
 import authenticateAccessToken from "../middleware/authenticateAccessToken";
@@ -18,33 +22,39 @@ const userController = new UserController(userService, logger);
 
 router.post(
     "/create",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
     registrationValidators,
     (req: Request, res: Response, next: NextFunction) =>
-        userController.create(req, res, next),
+        userController.create(req, res, next) as unknown as RequestHandler,
 );
 
 router.post(
     "/list",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
     (req: Request, res: Response, next: NextFunction) =>
-        userController.getUsersByTenantId(req, res, next),
+        userController.getUsersByTenantId(
+            req,
+            res,
+            next,
+        ) as unknown as RequestHandler,
 );
 
 router.post(
     "/update",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
-    (req: Request, res: Response) => userController.updateUser(req, res),
+    (req: Request, res: Response) =>
+        userController.updateUser(req, res) as unknown as RequestHandler,
 );
 
 router.post(
     "/delete",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
-    (req: Request, res: Response) => userController.deleteUser(req, res),
+    (req: Request, res: Response) =>
+        userController.deleteUser(req, res) as unknown as RequestHandler,
 );
 
 export default router;
