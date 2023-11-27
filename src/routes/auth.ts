@@ -1,5 +1,9 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from "express";
 import AuthController from "../controllers/AuthController";
 import { UserService } from "../services/UserService";
 import { AppDataSource } from "../config/data-source";
@@ -32,33 +36,47 @@ router.post(
     "/register",
     registrationValidators,
     (req: Request, res: Response, next: NextFunction) =>
-        authController.register(req, res, next),
+        authController.register(req, res, next) as unknown as RequestHandler,
 );
 
 router.post(
     "/login",
     loginValidators,
     (req: Request, res: Response, next: NextFunction) =>
-        authController.login(req, res, next),
+        authController.login(req, res, next) as unknown as RequestHandler,
 );
 
-router.post("/self", authenticateAccessToken, (req: Request, res: Response) =>
-    authController.self(req as RequestWithAuthInfo, res),
+router.post(
+    "/self",
+    authenticateAccessToken as RequestHandler,
+    (req: Request, res: Response) =>
+        authController.self(
+            req as RequestWithAuthInfo,
+            res,
+        ) as unknown as RequestHandler,
 );
 
 router.post(
     "/refresh",
-    authenticateRefreshToken,
+    authenticateRefreshToken as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
-        authController.refresh(req as RequestWithAuthInfo, res, next),
+        authController.refresh(
+            req as RequestWithAuthInfo,
+            res,
+            next,
+        ) as unknown as RequestHandler,
 );
 
 router.post(
     "/logout",
-    authenticateAccessToken,
-    parseRefreshToken,
+    authenticateAccessToken as RequestHandler,
+    parseRefreshToken as RequestHandler,
     (req: Request, res: Response, next: NextFunction) =>
-        authController.logout(req as RequestWithAuthInfo, res, next),
+        authController.logout(
+            req as RequestWithAuthInfo,
+            res,
+            next,
+        ) as unknown as RequestHandler,
 );
 
 export default router;
