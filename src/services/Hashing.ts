@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const hashData = async (dataToHash: string) => {
     // password hashing using bcrypt
