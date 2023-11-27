@@ -1,5 +1,9 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+    NextFunction,
+    Request,
+    RequestHandler,
+    Response,
+} from "express";
 import { TenantController } from "../controllers/TenantController";
 import tenantCreateValidator from "../validators/tenant-create-validator";
 import { TenantService } from "../services/TenantService";
@@ -18,36 +22,41 @@ const tenantController = new TenantController(tenantService, logger);
 
 router.post(
     "/create",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
     tenantCreateValidator,
     (req: Request, res: Response, next: NextFunction) =>
-        tenantController.create(req, res, next),
+        tenantController.create(req, res, next) as unknown as RequestHandler,
 );
 
-router.get("/getTenants", (req: Request, res: Response) =>
-    tenantController.getTenants(req, res),
+router.get(
+    "/getTenants",
+    (req: Request, res: Response) =>
+        tenantController.getTenants(req, res) as unknown as RequestHandler,
 );
 
 router.post(
     "/findTenant",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
-    (req: Request, res: Response) => tenantController.findTenant(req, res),
+    (req: Request, res: Response) =>
+        tenantController.findTenant(req, res) as unknown as RequestHandler,
 );
 
 router.post(
     "/updateTenant",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
-    (req: Request, res: Response) => tenantController.updateTenant(req, res),
+    (req: Request, res: Response) =>
+        tenantController.updateTenant(req, res) as unknown as RequestHandler,
 );
 
 router.post(
     "/deleteTenant",
-    authenticateAccessToken,
+    authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin]),
-    (req: Request, res: Response) => tenantController.deleteTenant(req, res),
+    (req: Request, res: Response) =>
+        tenantController.deleteTenant(req, res) as unknown as RequestHandler,
 );
 
 export default router;
