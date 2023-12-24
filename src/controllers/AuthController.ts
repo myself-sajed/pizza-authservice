@@ -94,8 +94,8 @@ export default class AuthController {
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
         }
-
         const { email, password } = req.body;
+
         this.logger.debug({ email, password: "******" });
 
         try {
@@ -165,7 +165,7 @@ export default class AuthController {
             });
 
             this.logger.info("User login was successful.", { id: user.id });
-            res.json({ email, dbUserEmail: user.email });
+            res.json({ email, dbUserEmail: user.email, id: user.id });
         } catch (error) {
             next(error);
             return;
