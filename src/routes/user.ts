@@ -32,7 +32,7 @@ router.post(
 router.post(
     "/list",
     authenticateAccessToken as RequestHandler,
-    canOnlyBeAccessedBy([Roles.Admin]),
+    canOnlyBeAccessedBy([Roles.Admin, Roles.Manager]),
     (req: Request, res: Response, next: NextFunction) =>
         userController.getUsersByTenantId(
             req,
