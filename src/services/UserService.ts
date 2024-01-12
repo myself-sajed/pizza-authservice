@@ -40,10 +40,14 @@ export class UserService {
     async findById(id: number) {
         return await this.userRepository.findOne({
             where: { id },
+            relations: { tenant: true },
         });
     }
 
     async findUsersByTenantId(tenantId: number) {
+        if (tenantId === 0) {
+            return await this.userRepository.find({});
+        }
         return await this.userRepository.find({
             where: { tenant: { id: tenantId } },
         });
