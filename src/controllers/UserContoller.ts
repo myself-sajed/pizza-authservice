@@ -4,9 +4,10 @@ import {
     RequestWithTenantId,
     RequestWithUserInfo,
     RequestWithUserUpdateInfo,
+    UserListQueryParams,
 } from "../types";
 import createHttpError from "http-errors";
-import { validationResult } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 import { Logger } from "winston";
 
 export class UserController {
@@ -51,10 +52,15 @@ export class UserController {
     ) {
         const { tenantId } = req.body;
 
+        const queryParams = matchedData(req, { onlyValidData: true });
+
+        console.log("Query parameters: ", queryParams);
+
         try {
             // creating user
             const users = await this.userService.findUsersByTenantId(
                 Number(tenantId),
+                queryParams as UserListQueryParams,
             );
 
             res.status(201).json({ users });

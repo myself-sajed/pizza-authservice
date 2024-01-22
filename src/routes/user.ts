@@ -10,6 +10,7 @@ import authenticateAccessToken from "../middleware/authenticateAccessToken";
 import canOnlyBeAccessedBy from "../middleware/canAccess";
 import { Roles } from "../constants";
 import registrationValidators from "../validators/registration-validators";
+import userListValidator from "../validators/user-list-validator";
 import { UserController } from "../controllers/UserContoller";
 import { UserService } from "../services/UserService";
 import { User } from "../entity/User";
@@ -33,6 +34,7 @@ router.post(
     "/list",
     authenticateAccessToken as RequestHandler,
     canOnlyBeAccessedBy([Roles.Admin, Roles.Manager]),
+    userListValidator,
     (req: Request, res: Response, next: NextFunction) =>
         userController.getUsersByTenantId(
             req,

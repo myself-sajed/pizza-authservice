@@ -70,3 +70,8 @@ export interface UserDetailsToUpdate {
 export interface ResponseBody {
     users: UserInfo[];
 }
+
+export interface UserListQueryParams {
+    currentPage: number;
+    perPage: number;
+}

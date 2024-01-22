@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { User } from "../entity/User";
-import { UserDetailsToUpdate, UserInfo } from "../types";
+import { UserDetailsToUpdate, UserInfo, UserListQueryParams } from "../types";
 import createHttpError from "http-errors";
 import { hashData } from "./Hashing";
 
@@ -44,13 +44,32 @@ export class UserService {
         });
     }
 
-    async findUsersByTenantId(tenantId: number) {
+    async findUsersByTenantId(
+        tenantId: number,
+        queryParams: UserListQueryParams,
+    ) {
+        const { currentPage, perPage } = queryParams;
         if (tenantId === 0) {
-            return await this.userRepository.find({});
+            const queryBuilder = this.userRepository.createQueryBuilder();
+            const result = await queryBuilder
+                .skip((currentPage - 1) * perPage)
+                .take(perPage)
+                .getManyAndCount();
+
+            const [users, count] = result;
+
+            return { users, count, currentPage, perPage };
         }
-        return await this.userRepository.find({
+        const [users, count] = await this.userRepository.findAndCount({
             where: { tenant: { id: tenantId } },
         });
+
+        return {
+            users,
+            count,
+            perPage,
+            currentPage,
+        };
     }
 
     async updateUserById(id: number, dataToUpdate: UserDetailsToUpdate) {
