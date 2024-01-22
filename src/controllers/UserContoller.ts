@@ -54,8 +54,6 @@ export class UserController {
 
         const queryParams = matchedData(req, { onlyValidData: true });
 
-        console.log("Query parameters: ", queryParams);
-
         try {
             // creating user
             const users = await this.userService.findUsersByTenantId(
