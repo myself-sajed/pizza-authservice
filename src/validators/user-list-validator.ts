@@ -2,6 +2,20 @@ import { checkSchema } from "express-validator";
 
 export default checkSchema(
     {
+        qTerm: {
+            customSanitizer: {
+                options: (value: unknown) => {
+                    return value || "";
+                },
+            },
+        },
+        role: {
+            customSanitizer: {
+                options: (value: string) => {
+                    return value || "";
+                },
+            },
+        },
         currentPage: {
             customSanitizer: {
                 options: (value: string) => {

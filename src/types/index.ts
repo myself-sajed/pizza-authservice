@@ -72,6 +72,8 @@ export interface ResponseBody {
 }
 
 export interface UserListQueryParams {
+    qTerm: string;
+    role: string;
     currentPage: number;
     perPage: number;
 }

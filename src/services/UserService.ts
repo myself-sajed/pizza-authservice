@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 import { User } from "../entity/User";
 import { UserDetailsToUpdate, UserInfo, UserListQueryParams } from "../types";
 import createHttpError from "http-errors";
@@ -48,9 +48,25 @@ export class UserService {
         tenantId: number,
         queryParams: UserListQueryParams,
     ) {
-        const { currentPage, perPage } = queryParams;
+        const { currentPage, perPage, qTerm, role } = queryParams;
         if (tenantId === 0) {
-            const queryBuilder = this.userRepository.createQueryBuilder();
+            const queryBuilder = this.userRepository.createQueryBuilder("user");
+
+            if (qTerm) {
+                const searchTerm = `%${qTerm}%`;
+                queryBuilder.where(
+                    new Brackets((qb) => {
+                        qb.where("user.name ILike :q", {
+                            q: searchTerm,
+                        }).orWhere("user.email Ilike :q", { q: searchTerm });
+                    }),
+                );
+            }
+
+            if (role) {
+                queryBuilder.andWhere("user.role = :role", { role });
+            }
+
             const result = await queryBuilder
                 .skip((currentPage - 1) * perPage)
                 .take(perPage)
