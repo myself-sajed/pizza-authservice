@@ -39,7 +39,8 @@ export class UserController {
 
             res.status(201).send(user);
         } catch (error) {
-            const err = createHttpError(400, "Could not create user");
+            console.log(error);
+            const err = createHttpError(400, `Could not create user`);
             next(err);
             return;
         }

@@ -77,3 +77,8 @@ export interface UserListQueryParams {
     currentPage: number;
     perPage: number;
 }
+export interface TenantListQueryParams {
+    qTerm: string;
+    currentPage: number;
+    perPage: number;
+}

@@ -6,6 +6,7 @@ import express, {
 } from "express";
 import { TenantController } from "../controllers/TenantController";
 import tenantCreateValidator from "../validators/tenant-create-validator";
+import tenantListValidator from "../validators/tenant-list-validator";
 import { TenantService } from "../services/TenantService";
 import { AppDataSource } from "../config/data-source";
 import { Tenant } from "../entity/Tenant";
@@ -31,6 +32,7 @@ router.post(
 
 router.get(
     "/getTenants",
+    tenantListValidator,
     (req: Request, res: Response) =>
         tenantController.getTenants(req, res) as unknown as RequestHandler,
 );

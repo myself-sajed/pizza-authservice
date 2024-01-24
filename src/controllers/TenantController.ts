@@ -5,9 +5,10 @@ import {
     RequestWithTenantId,
     RequestWithTenantUpdateInfo,
 } from "../types";
-import { validationResult } from "express-validator";
+import { matchedData, validationResult } from "express-validator";
 import { Logger } from "winston";
 import createHttpError from "http-errors";
+import { TenantListQueryParams } from "../types/index";
 
 export class TenantController {
     constructor(
@@ -53,8 +54,13 @@ export class TenantController {
     }
 
     async getTenants(req: Request, res: Response) {
+        // tenant validator for query
+        const queryParams = matchedData(req, { onlyValidData: true });
+
         try {
-            const tenants = await this.tenantService.getTenantList();
+            const tenants = await this.tenantService.getTenantList(
+                queryParams as TenantListQueryParams,
+            );
             res.status(200).json({ tenants });
         } catch (error) {
             const err = createHttpError(400, "No tenants found");
