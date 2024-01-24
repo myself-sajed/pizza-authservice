@@ -24,7 +24,6 @@ export class TenantService {
 
     async getTenantList(queryParams: TenantListQueryParams) {
         const { currentPage, perPage, qTerm } = queryParams;
-        console.log(queryParams);
         try {
             const queryBuilder =
                 this.tenantRepository.createQueryBuilder("tenant");
