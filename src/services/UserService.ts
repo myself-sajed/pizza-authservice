@@ -58,7 +58,9 @@ export class UserService {
                     new Brackets((qb) => {
                         qb.where("user.name ILike :q", {
                             q: searchTerm,
-                        }).orWhere("user.email Ilike :q", { q: searchTerm });
+                        })
+                            .orWhere("user.email Ilike :q", { q: searchTerm })
+                            .orWhere("tenant.name ILike :q", { q: searchTerm });
                     }),
                 );
             }
@@ -68,6 +70,7 @@ export class UserService {
             }
 
             const result = await queryBuilder
+                .leftJoinAndSelect("user.tenant", "tenant")
                 .skip((currentPage - 1) * perPage)
                 .take(perPage)
                 .orderBy("user.id", "DESC")
