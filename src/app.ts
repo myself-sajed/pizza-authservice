@@ -1,5 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
-import { HttpError } from "http-errors";
+import express from "express";
 import cors from "cors";
 
 // routers
@@ -10,6 +9,7 @@ import userRouter from "./routes/user";
 import "reflect-metadata";
 import cookieParser from "cookie-parser";
 import { Config } from "./config";
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
 const ORIGIN_URI = Config.ORIGIN_URI;
 
@@ -34,18 +34,6 @@ app.use("/user", userRouter);
 
 // Global error handling
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    const statusCode = err.statusCode || err.status || 500;
-    res.status(statusCode).json({
-        errors: [
-            {
-                type: err.name,
-                msg: err.message,
-                path: "",
-                location: "",
-            },
-        ],
-    });
-});
+app.use(globalErrorHandler);
 
 export default app;
