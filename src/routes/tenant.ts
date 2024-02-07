@@ -37,6 +37,15 @@ router.get(
         tenantController.getTenants(req, res) as unknown as RequestHandler,
 );
 
+router.get(
+    "/getAllTenantList",
+    (req: Request, res: Response) =>
+        tenantController.getAllTenantList(
+            req,
+            res,
+        ) as unknown as RequestHandler,
+);
+
 router.post(
     "/findTenant",
     authenticateAccessToken as RequestHandler,

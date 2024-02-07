@@ -53,6 +53,16 @@ export class TenantController {
         }
     }
 
+    async getAllTenantList(req: Request, res: Response) {
+        try {
+            const tenants = await this.tenantService.getAllTenants();
+            res.status(200).json({ tenants });
+        } catch (error) {
+            const err = createHttpError(400, "No tenants found");
+            throw err;
+        }
+    }
+
     async getTenants(req: Request, res: Response) {
         // tenant validator for query
         const queryParams = matchedData(req, { onlyValidData: true });

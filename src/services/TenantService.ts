@@ -22,6 +22,17 @@ export class TenantService {
         }
     }
 
+    async getAllTenants() {
+        try {
+            return await this.tenantRepository.find({
+                select: ["address", "id", "name"],
+            });
+        } catch (error) {
+            const err = createHttpError("Error not find tenant");
+            throw err;
+        }
+    }
+
     async getTenantList(queryParams: TenantListQueryParams) {
         const { currentPage, perPage, qTerm } = queryParams;
         try {
