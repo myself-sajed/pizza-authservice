@@ -24,7 +24,8 @@ export class UserController {
             return res.status(400).json({ errors: result.array() });
         }
 
-        const { name, email, password, role, tenantId } = req.body;
+        const { name, email, password, role, tenant } = req.body;
+        console.log("usercontroller :", name, email, password, role, tenant);
         this.logger.debug({ name, email, password: "******" });
 
         try {
@@ -34,7 +35,7 @@ export class UserController {
                 email,
                 password,
                 role,
-                tenantId,
+                tenant,
             });
 
             res.status(201).send(user);

@@ -6,6 +6,7 @@ export interface UserInfo {
     password: string;
     role: string;
     tenantId?: string;
+    tenant?: string;
 }
 
 export interface RequestWithUserInfo extends Request {

@@ -8,7 +8,7 @@ export class UserService {
     constructor(private userRepository: Repository<User>) {
         this.userRepository = userRepository;
     }
-    async create({ name, email, password, role, tenantId }: UserInfo) {
+    async create({ name, email, password, role, tenant }: UserInfo) {
         const user = await this.userRepository.findOne({
             where: { email },
         });
@@ -16,6 +16,8 @@ export class UserService {
             const err = createHttpError(400, "Email already exists");
             throw err;
         }
+
+        console.log(name, email, password, tenant);
 
         // password hashing using bcrypt
         const hashedPassword = await hashData(password);
@@ -25,8 +27,10 @@ export class UserService {
             email,
             password: hashedPassword,
             role,
-            tenant: tenantId ? { id: Number(tenantId) } : undefined,
+            tenant: tenant ? { id: Number(tenant) } : undefined,
         });
+
+        console.log("New User :", newUser);
 
         return newUser;
     }
