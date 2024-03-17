@@ -131,6 +131,7 @@ export default class AuthController {
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                tenant: user.tenant ? String(user.tenant.id) : "",
             };
 
             // generating access token
@@ -145,6 +146,8 @@ export default class AuthController {
                 ...payload,
                 id: refreshTokenRecord.id,
             });
+
+            console.log(refreshToken);
 
             // sending cookies
 

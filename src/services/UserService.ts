@@ -17,8 +17,6 @@ export class UserService {
             throw err;
         }
 
-        console.log(name, email, password, tenant);
-
         // password hashing using bcrypt
         const hashedPassword = await hashData(password);
 
@@ -30,14 +28,13 @@ export class UserService {
             tenant: tenant ? { id: Number(tenant) } : undefined,
         });
 
-        console.log("New User :", newUser);
-
         return newUser;
     }
 
     async findByEmail(email: string) {
         return await this.userRepository.findOne({
             where: { email },
+            relations: { tenant: true },
         });
     }
 
