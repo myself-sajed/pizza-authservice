@@ -13,7 +13,6 @@ const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
     },
 });
 
-
 // writing the keys into .pem files
 
 fs.writeFileSync("certs/privateKey.pem", privateKey);
