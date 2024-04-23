@@ -25,7 +25,6 @@ export class UserController {
         }
 
         const { name, email, password, role, tenant } = req.body;
-        console.log("usercontroller :", name, email, password, role, tenant);
         this.logger.debug({ name, email, password: "******" });
 
         try {

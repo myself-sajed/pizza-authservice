@@ -147,8 +147,6 @@ export default class AuthController {
                 id: refreshTokenRecord.id,
             });
 
-            console.log(refreshToken);
-
             // sending cookies
 
             // 1. sending access token in cookies
