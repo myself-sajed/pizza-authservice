@@ -8,12 +8,13 @@ export default expressjwt({
     getToken: (req: Request) => {
         // making it flexible for both headers and cookies
 
-        const authHeaders = req.headers.authorization;
-        if (authHeaders && authHeaders.split(" ")[1] !== "undefined") {
-            const token = authHeaders.split(" ")[1];
+        const refreshTokenCookie = (
+            req.cookies as { refreshToken: string | null }
+        ).refreshToken as string;
 
-            if (token) {
-                return token;
+        if (refreshTokenCookie) {
+            if (refreshTokenCookie) {
+                return refreshTokenCookie;
             }
         }
 
