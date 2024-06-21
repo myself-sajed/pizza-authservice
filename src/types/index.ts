@@ -16,6 +16,8 @@ export interface RequestWithUserInfo extends Request {
 export interface RequestWithAuthInfo extends Request {
     auth: {
         sub: string;
+        name: string;
+        email: string;
         role: string;
         id?: string;
         tenant?: string;

@@ -46,6 +46,8 @@ export default class AuthController {
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                name: user.name,
+                email: user.email,
             };
 
             // generating access token
@@ -131,6 +133,8 @@ export default class AuthController {
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
+                name: user.name,
+                email: user.email,
                 tenant: user.tenant ? String(user.tenant.id) : "",
             };
 
@@ -185,6 +189,8 @@ export default class AuthController {
         const payload: JwtPayload = {
             sub: req.auth.sub,
             role: req.auth.role,
+            name: req.auth.name,
+            email: req.auth.email,
         };
 
         // generating access token
