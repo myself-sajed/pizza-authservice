@@ -53,13 +53,13 @@ export class TenantController {
         }
     }
 
-    async getAllTenantList(req: Request, res: Response) {
+    async getAllTenantList(req: Request, res: Response, next: NextFunction) {
         try {
             const tenants = await this.tenantService.getAllTenants();
             res.status(200).json({ tenants });
         } catch (error) {
             const err = createHttpError(400, "No tenants found");
-            throw err;
+            next(err);
         }
     }
 

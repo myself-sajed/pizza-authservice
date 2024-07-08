@@ -39,10 +39,11 @@ router.get(
 
 router.get(
     "/getAllTenantList",
-    (req: Request, res: Response) =>
+    (req: Request, res: Response, next: NextFunction) =>
         tenantController.getAllTenantList(
             req,
             res,
+            next,
         ) as unknown as RequestHandler,
 );
 
