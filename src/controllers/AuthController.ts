@@ -84,7 +84,7 @@ export default class AuthController {
             this.logger.info("User registration was successful.", {
                 id: user.id,
             });
-            res.status(201).json(user);
+            res.status(201).json({ status: "success", user });
         } catch (error) {
             next(error);
             return;
@@ -170,7 +170,7 @@ export default class AuthController {
             });
 
             this.logger.info("User login was successful.", { id: user.id });
-            res.json({ email, dbUserEmail: user.email, id: user.id });
+            res.json({ status: "success", user });
         } catch (error) {
             next(error);
             return;
