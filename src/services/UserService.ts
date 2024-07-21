@@ -3,6 +3,7 @@ import { User } from "../entity/User";
 import { UserDetailsToUpdate, UserInfo, UserListQueryParams } from "../types";
 import createHttpError from "http-errors";
 import { hashData } from "./Hashing";
+import { Roles } from "../constants";
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {
@@ -69,6 +70,10 @@ export class UserService {
             if (role) {
                 queryBuilder.andWhere("user.role = :role", { role });
             }
+
+            queryBuilder.andWhere("user.role != :role", {
+                role: Roles.Customer,
+            });
 
             const result = await queryBuilder
                 .leftJoinAndSelect("user.tenant", "tenant")
