@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { TokenService } from "../services/TokenService";
 import createHttpError from "http-errors";
 import { CredentialManagerService } from "../services/CredentialManagerService";
+import { Config } from "../config";
 
 export default class AuthController {
     constructor(
@@ -158,7 +159,7 @@ export default class AuthController {
                 maxAge: 60 * 60 * 1000, //1hr
                 httpOnly: true,
                 sameSite: "strict",
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
             });
 
             // 2. sending refresh token in cookies
@@ -166,7 +167,7 @@ export default class AuthController {
                 maxAge: 60 * 60 * 1000 * 365, // 1yr
                 httpOnly: true,
                 sameSite: "strict",
-                domain: "localhost",
+                domain: Config.MAIN_DOMAIN,
             });
 
             this.logger.info("User login was successful.", { id: user.id });

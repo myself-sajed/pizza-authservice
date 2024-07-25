@@ -74,7 +74,7 @@ export class TokenService {
             maxAge: maxAge,
             httpOnly: true,
             sameSite: "strict",
-            domain: "localhost",
+            domain: Config.MAIN_DOMAIN,
         });
     }
 }

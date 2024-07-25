@@ -18,6 +18,7 @@ const {
     PRIVATE_KEY,
     ADMIN_URI,
     CLIENT_URI,
+    MAIN_DOMAIN,
 } = process.env;
 
 export const Config = {
@@ -33,4 +34,5 @@ export const Config = {
     PRIVATE_KEY,
     ADMIN_URI,
     CLIENT_URI,
+    MAIN_DOMAIN,
 };
