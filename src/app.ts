@@ -11,12 +11,13 @@ import cookieParser from "cookie-parser";
 import { Config } from "./config";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
-const ORIGIN_URI = Config.ORIGIN_URI;
+const ADMIN_URI = Config.ADMIN_URI;
+const CLIENT_URI = Config.ADMIN_URI;
 
 const app = express();
 app.use(
     cors({
-        origin: [ORIGIN_URI!],
+        origin: [ADMIN_URI!, CLIENT_URI!],
         credentials: true,
     }),
 );
