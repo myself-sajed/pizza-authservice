@@ -1,35 +1,50 @@
-# Step 1: Building our application first, this part will create a build 
+# syntax=docker/dockerfile:1
 
-FROM node:18-alpine as builder
+ARG NODE_VERSION=21.7.1
 
-WORKDIR /app
+FROM node:${NODE_VERSION}-alpine as builder
 
-COPY package*.json ./
 
-RUN npm ci
+WORKDIR /home/node/app
+
+
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci
+
 
 COPY . .
+
 
 RUN npm run build
 
 
-# Step 2 : This process will create a build image
+FROM node:${NODE_VERSION}-alpine as runner
 
-FROM node:18-alpine as production
+USER node
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
 
 ENV NODE_ENV=production
 
-WORKDIR /app
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev --ignore-scripts
 
-COPY package*.json ./
 
-RUN npm ci --ignore-scripts
-
-COPY --from=builder app/dist ./
+COPY --from=builder --chown=node:node /home/node/app/dist ./
 
 EXPOSE 5000
 
-CMD [ "node", "src/Server.js" ]
+
+
+CMD ["node", "src/server.js"]
+
+
 
 
 
