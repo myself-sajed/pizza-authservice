@@ -11,7 +11,7 @@ describe("/GET User auth", () => {
     let jwks: ReturnType<typeof createJWKSMock>;
 
     beforeAll(async () => {
-        jwks = createJWKSMock("http://localhost:5000");
+        jwks = createJWKSMock("http://localhost:5001");
         connection = await AppDataSource.initialize();
     });
 
